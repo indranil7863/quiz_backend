@@ -1,15 +1,56 @@
 generator client {
   provider = "prisma-client"
-  output = "../src/generated"
+  output   = "../src/generated"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-model User { 
-  id   String     @id @default(uuid()) @db.Uuid
-  email String  @unique
-  name  String?
+model User {
+  id       String  @id @default(uuid()) @db.Uuid
+  email    String  @unique
+  name     String?
   password String
-} 
+
+  //relation
+  quizes   Quiz[]
+  attempts QuizAttempt[]
+}
+
+model Quiz {
+  id          String @id @default(uuid()) @db.Uuid
+  title       String @db.VarChar(255)
+  description String
+
+  //relation
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String     @db.Uuid
+  questions Question[]
+
+  attempts QuizAttempt[]
+}
+
+model Question {
+  id        String   @id @default(uuid()) @db.Uuid
+  question  String
+  options   String[]
+  isCorrect Int
+
+  // relation
+  quizId String @db.Uuid
+  quiz   Quiz   @relation(fields: [quizId], references: [id])
+}
+
+model QuizAttempt {
+  id          String   @id @default(uuid()) @db.Uuid
+  score       Int
+  attemptedAt DateTime @default(now())
+
+  // relation
+  quizId String @db.Uuid
+  quiz   Quiz   @relation(fields: [quizId], references: [id])
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id])
+}
