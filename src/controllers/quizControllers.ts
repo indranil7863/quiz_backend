@@ -5,6 +5,7 @@ const getQuizData = async (req: Request , res: Response)=>{
 }
 
 const createQuiz = async (req: Request, res: Response)=>{
+  
 
 }
 const updateQuiz = async (req: Request, res: Response)=>{
