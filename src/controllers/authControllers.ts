@@ -48,6 +48,19 @@ const SignIn = async (req:Request , res: Response)=>{
         return res.status(401).json({message: "Unauthorized access!"})
     }
 
+    // create cookies to authorize user
+    const cookiePayload = JSON.stringify({
+        id: user.id,
+        expiry: Math.round(Date.now()/1000 + 7 * 24 * 60 * 60)
+    })
+    res.cookie("token", Buffer.from(cookiePayload).toString('base64url'), {
+        httpOnly: true,
+        signed: true,
+        maxAge: 60 * 1000 * 60 * 24 * 7,
+        sameSite: "lax",
+        secure: false
+    })
+
     res.status(200).json({message: "SignIn successful!"})
 }
 
