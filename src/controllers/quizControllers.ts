@@ -7,6 +7,7 @@ import type { Question } from "../types/question";
 // find quiz with userId & another way to fetch using quizCode for other user
 const getQuizData = async (req: AuthRequest , res: Response)=>{
     const userId = req.user?.id as string;
+  
     if(!userId)return res.json({message: "Not valid userid"});
     try {
         const quizes = await prisma.quiz.findMany({
