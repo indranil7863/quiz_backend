@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 
 
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: "https://quiz-app-orpin-gamma.vercel.app",
     credentials: true
 }))
 console.log("request")
