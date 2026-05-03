@@ -57,8 +57,8 @@ const SignIn = async (req:Request , res: Response)=>{
         httpOnly: true,
         signed: true,
         maxAge: 60 * 1000 * 60 * 24 * 7,
-        sameSite: "lax",
-        secure: false
+        sameSite: "none",
+        secure: true
     })
 
     res.status(200).json({message: "SignIn successful!"})
