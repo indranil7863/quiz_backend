@@ -1,7 +1,7 @@
 import type { Request, Response } from "express"
-import {prisma} from '../lib/prisma'
-import type { AuthRequest } from "../types/auth";
-import type { Question } from "../types/question";
+import {prisma} from '../lib/prisma.js'
+import type { AuthRequest } from "../types/auth.js";
+import type { Question } from "../types/question.js";
 
 
 // find quiz with userId & another way to fetch using quizCode for other user
@@ -25,7 +25,6 @@ const getQuizData = async (req: AuthRequest , res: Response)=>{
     }
 
 }
-
 // fetch single quiz
 const getSingleQuiz = async (req: Request, res: Response) =>{
     const quizId = req.params.id as string;
@@ -48,7 +47,6 @@ const getSingleQuiz = async (req: Request, res: Response) =>{
    }
 
 }
-
 const sendQuizId = async (req: AuthRequest, res: Response)=>{
     const code = req.params.id as string;
 
@@ -68,7 +66,6 @@ const sendQuizId = async (req: AuthRequest, res: Response)=>{
         res.status(400).json({message: "Internal Server Error"})
     }
 }
-
 const createQuiz = async (req: AuthRequest, res: Response)=>{
     const userId = req.user?.id as string;
     const data = req.body;
@@ -102,7 +99,6 @@ const createQuiz = async (req: AuthRequest, res: Response)=>{
     }
 
 }
-
 const updateQuiz = async (req: AuthRequest, res: Response)=>{
     const quizId = req.params.id as string;
     const {title, description} = req.body

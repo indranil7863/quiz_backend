@@ -41,8 +41,8 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-     "module": "ESNext",
-    "moduleResolution": "bundler",
+     "module": "nodenext",
+    "moduleResolution": "nodenext",
     "ignoreDeprecations": "6.0"
   },
   "include": ["src/**/*.ts"],

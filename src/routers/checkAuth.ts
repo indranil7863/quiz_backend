@@ -1,6 +1,6 @@
 import type { Response, NextFunction } from "express"
-import { prisma } from '../lib/prisma'
-import type { AuthRequest } from "../types/auth";
+import { prisma } from '../lib/prisma.js'
+import type { AuthRequest } from "../types/auth.js";
 
 const checkAuth = async (req: AuthRequest , res: Response, next: NextFunction)=>{
    const { token } = req.signedCookies;

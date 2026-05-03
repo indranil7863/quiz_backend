@@ -4,7 +4,7 @@ import { config } from 'dotenv';
 import UserRouter from './routers/User.js';
 import authRoute from './routers/authRoute.js'
 import quizRoute from './routers/quizRoute.js'
-import checkAuth from './routers/checkAuth'
+import checkAuth from './routers/checkAuth.js'
 import cookieParser from 'cookie-parser'
 
 config();
