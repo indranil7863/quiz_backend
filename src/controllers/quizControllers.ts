@@ -26,6 +26,49 @@ const getQuizData = async (req: AuthRequest , res: Response)=>{
 
 }
 
+// fetch single quiz
+const getSingleQuiz = async (req: Request, res: Response) =>{
+    const quizId = req.params.id as string;
+    if(!quizId)return res.status(404).json({message: "Send a valid quizid"})
+    
+   try {
+     const quiz = await prisma.quiz.findUnique({
+        where:{
+            id: quizId
+        },
+        include: {
+            questions: true
+        }
+    })
+
+    res.status(200).json({message: quiz});
+   } catch (error) {
+    console.log("Error: ",error)
+    res.status(400).json({message: "failed to fetch quiz"})
+   }
+
+}
+
+const sendQuizId = async (req: AuthRequest, res: Response)=>{
+    const code = req.params.id as string;
+
+    try {
+        const quizId = await prisma.quiz.findUnique({
+            where:{
+                quizCode: code
+            },
+            select:{
+                id: true
+            }
+        })
+        if(!quizId)return res.status(400).json({message: "Invalid Code!"})
+        res.status(200).json({message: "success", quizId});
+    } catch (error) {
+        console.log("Error: ", error);
+        res.status(400).json({message: "Internal Server Error"})
+    }
+}
+
 const createQuiz = async (req: AuthRequest, res: Response)=>{
     const userId = req.user?.id as string;
     const data = req.body;
@@ -34,6 +77,7 @@ const createQuiz = async (req: AuthRequest, res: Response)=>{
     // check the user who want to create the quiz is the same person who send it 
 
     try {
+        
         const quizCreated = await prisma.quiz.create({
         data:{
             title: data.title,
@@ -44,7 +88,8 @@ const createQuiz = async (req: AuthRequest, res: Response)=>{
                 create: data.questions.map((q: Question) =>({
                     question: q.question,
                     options: q.options,
-                    isCorrect: q.correctIndex
+                    correctIndex: q.correctIndex,
+                    duration: q.duration
                 }))
             }
         }
@@ -59,46 +104,47 @@ const createQuiz = async (req: AuthRequest, res: Response)=>{
 }
 
 const updateQuiz = async (req: AuthRequest, res: Response)=>{
-    const quizId = req.body.quiz.id as string;
-    const questions = req.body.quiz.questions;
-    const existingQustions = questions.filter((q: Question) => q.id);
-    const newQuestions = questions.filter((q: Question) => !q.id);
-
+    const quizId = req.params.id as string;
+    const {title, description} = req.body
+    const questions = req.body.questions;
+ 
    try {
-     const updateQuiz = await prisma.quiz.update({
-        where:{
-            id: quizId
+    const updatedQuiz = await prisma.quiz.update({
+        where: {
+            id: quizId,
         },
-        data:{
-            title: questions.title,
-            description: questions.description,
-            questions:{
-                create: newQuestions.map((q: Question) =>({
-                    question: q.question,
-                    options: q.options,
-                    isCorrect: q.correctIndex
-                })),
-
-                update: existingQustions.map((q: Question) =>({
-                    where: { id: q.id},
-                    data:{
-                        question: q.question,
-                        options: q.options,
-                        isCorrect: q.correctIndex
-                    }
-                })),
-
-                deleteMany:{
-                    id:{
-                        notIn: existingQustions.map((q: Question)=> q.id)
-                    }
-                }
-
-            }
-        }   
-    })
-
-    res.status(201).json({success: true});
+        data: {
+            title: title,
+            description: description,
+            questions: {
+            // Manage every question in the array
+            upsert: questions.map((q: Question) => ({
+                where: { id: q.id },
+                update: {
+                question: q.question,
+                options: q.options,
+                correctIndex: q.correctIndex,
+                duration: q.duration,
+                },
+                create: {
+                id: q.id, // Manual ID insertion for new records
+                question: q.question,
+                options: q.options,
+                correctIndex: q.correctIndex,
+                duration: q.duration,
+                },
+            })),
+            // Delete any questions currently in the DB that aren't in this list
+            deleteMany: {
+                id: {
+                notIn: questions.map((q: Question) => q.id),
+                },
+            },
+            },
+        },
+        });
+   
+    res.status(200).json({success: true});
    } catch (error) {
         res.status(500).json({success: false});
    }
@@ -106,17 +152,18 @@ const updateQuiz = async (req: AuthRequest, res: Response)=>{
 }
 const deleteQuiz = async (req: AuthRequest, res: Response)=>{
     const quizId = req.params.id as string;
-
+    console.log(quizId)
    try {
-     const deleteQuiz = await prisma.quiz.delete({
+     const quiz = await prisma.quiz.delete({
         where: {
             id: quizId
         }
     })
+    console.log(quiz)
     res.status(200).json({success: true});
    } catch (error) {
      res.status(500).json({success: false});
    }
 }
 
-export {getQuizData, createQuiz, updateQuiz, deleteQuiz};
+export {getQuizData, createQuiz, updateQuiz, deleteQuiz, getSingleQuiz, sendQuizId};

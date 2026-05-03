@@ -26,7 +26,7 @@ model Quiz {
   description String
   quizCode    String     @unique
   //relation
-  user        User       @relation(fields: [userId], references: [id])
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String     @db.Uuid
   questions   Question[]
 
@@ -37,11 +37,12 @@ model Question {
   id        String   @id @default(uuid()) @db.Uuid
   question  String
   options   String[]
-  isCorrect Int
+  correctIndex Int
+  duration Int   @default(30)
 
   // relation
   quizId String @db.Uuid
-  quiz   Quiz   @relation(fields: [quizId], references: [id])
+  quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
 }
 
 model QuizAttempt {
@@ -51,8 +52,8 @@ model QuizAttempt {
 
   // relation
   quizId String @db.Uuid
-  quiz   Quiz   @relation(fields: [quizId], references: [id])
+  quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
 
   userId String @db.Uuid
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
