@@ -14,9 +14,13 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors({
     origin: "https://quiz-app-one-kappa-75.vercel.app",
-    // origin: "http://localhost:3000",
     credentials: true
 }))
+
+app.options("*", cors({
+  origin: "https://quiz-app-one-kappa-75.vercel.app",
+  credentials: true
+}));
 
 
 console.log("request")
