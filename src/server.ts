@@ -17,13 +17,11 @@ app.use(cors({
     credentials: true
 }))
 
+app.use(express.json());
 
-
-
-console.log("request")
 app.use(cookieParser("my-secret"));
 
-app.use(express.json());
+
 
 app.get('/', (req, res) => {
     res.send('Hello, World!');
