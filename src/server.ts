@@ -11,11 +11,14 @@ config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.set("trust proxy", 1);
+
 app.use(cors({
-    origin: "https://quiz-app-one-kappa-75.vercel.app",
+    // origin: "https://quiz-app-one-kappa-75.vercel.app",
+    origin: "http://localhost:3000",
     credentials: true
 }))
+
+
 console.log("request")
 app.use(cookieParser("my-secret"));
 
