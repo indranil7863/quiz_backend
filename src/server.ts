@@ -17,7 +17,7 @@ app.use(cors({
     credentials: true
 }))
 
-app.options("*", cors({
+app.options("/*", cors({
   origin: "https://quiz-app-one-kappa-75.vercel.app",
   credentials: true
 }));
