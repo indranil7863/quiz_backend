@@ -14,6 +14,14 @@ const decodedStr = Buffer.from(token, "base64url").toString();
 const data = JSON.parse(decodedStr);
 
 if (data.expiry < Date.now() / 1000) {
+    res.clearCookie("token", {
+        httpOnly: true,
+        signed: true,
+        sameSite: "none",
+        domain: '.indranil.shop',
+        path:'/',
+        secure: true
+        })
     return res.status(400).json({message: "please login!"})
 }
 const user = await prisma.user.findUnique({
@@ -24,6 +32,14 @@ const user = await prisma.user.findUnique({
     })
 
  if(!user){
+        res.clearCookie("token", {
+        httpOnly: true,
+        signed: true,
+        sameSite: "none",
+        domain: '.indranil.shop',
+        path:'/',
+        secure: true
+        })
         return res.status(409).json({message: "Unauthroized access!"});
     }
     // add user to req

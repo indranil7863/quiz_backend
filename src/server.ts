@@ -22,7 +22,6 @@ app.use(express.json());
 app.use(cookieParser("my-secret"));
 
 
-
 app.get('/', (req, res) => {
     res.send('Hello, World!');
 });

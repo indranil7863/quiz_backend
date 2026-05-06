@@ -6,8 +6,29 @@ import type { AuthRequest } from "../types/auth.js";
 
 const verifyAuth = async (req: Request, res: Response)=>{
     const {token} = req.signedCookies;
-   
+
     if(!token){
+        return res.status(401).json({authenticated: false});
+    }
+
+    const decodedStr = Buffer.from(token, "base64url").toString();
+    const data = JSON.parse(decodedStr);
+
+    const user = await prisma.user.findUnique({
+        where: {
+            id: data.id,
+            cookie: token,
+        }
+    })
+    if(!user){
+        res.clearCookie("token", {
+        httpOnly: true,
+        signed: true,
+        sameSite: "none",
+        domain: '.indranil.shop',
+        path:'/',
+        secure: true
+        })
         return res.status(401).json({authenticated: false});
     }
 
@@ -114,6 +135,8 @@ const Logout = async (req: AuthRequest, res: Response) =>{
         httpOnly: true,
         signed: true,
         sameSite: "none",
+        domain: '.indranil.shop',
+        path:'/',
         secure: true
         })
         res.status(200).json({message: "Logged out successfully!"})
