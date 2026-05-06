@@ -84,6 +84,8 @@ const SignIn = async (req:Request , res: Response)=>{
         signed: true,
         maxAge: 60 * 1000 * 60 * 24 * 7,
         sameSite: "none",
+        domain: '.indranil.shop',
+        path:'/',
         secure: true
     })
 
